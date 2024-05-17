@@ -19,13 +19,10 @@ def plot_time_signal_seconds(signal,sampling_freq):
     # plt.show()
 
 def get_fft(signal, sampling_freq):
-    fft_spectrum = np.fft.fft(signal)
+    fft_spectrum = np.fft.rfft(signal)
     freq = np.fft.rfftfreq(signal.size, d=1./sampling_freq)
     return fft_spectrum, freq
 
-def get_ifft(signal, sampling_freq):
-
-    return 
 
 def plot_fft_spectrum(signal, sampling_freq):
     fft_spectrum, freq = get_fft(signal, sampling_freq)
@@ -45,15 +42,15 @@ def play_audio(signal, sampling_freq):
 # main program goes here
 def main():
     # sampling_freq represents how many samples are taken in 1 sec
-    sampling_freq, signal = wavfile.read('D:\mina.wav')
+    sampling_freq, signal = wavfile.read('./mina.wav')
     # make samples magnitudes varies from -1,1
     signal = signal / 2.0**15 
     fft_sepctrum, freq = get_fft(signal, sampling_freq)
-    signal1 = np.fft.ifft(fft_sepctrum)
+    signal1 = np.fft.irfft(fft_sepctrum)
     print("signal1" , signal1)
     print("signal" , signal)
     plot_time_signal_seconds(signal, sampling_freq) # Time Domain Plot
-    # plot_fft_spectrum(signal, sampling_freq)      # Frequency Domain Plot
+    plot_fft_spectrum(signal, sampling_freq)      # Frequency Domain Plot
     # play_audio(signal, sampling_freq)   # Original signal
     # play_audio(signal1, sampling_freq)  # Reversed FFT signal
     
