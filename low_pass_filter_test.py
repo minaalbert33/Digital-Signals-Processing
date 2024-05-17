@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 
 
 
-def manual_convolve(x, h):
-    """Convolve two signals x and h"""
+def manual_convolve(x, h): # Question 2
     N = len(x)
     M = len(h)
     # full convolution (N + M - 1)
@@ -18,6 +17,32 @@ def manual_convolve(x, h):
                 y[n] += x[k] * h[n - k]
     
     return y
+
+
+def generate_complex_test_signal(samples_number=500, fs=500, f1_cycles=6, A1=1, f2_cycles=44, A2=0.5):
+    """Generate a complex test signal consisting of two sinusoids."""
+    n = np.arange(samples_number)
+    
+    # first sinusoid
+    f1 = f1_cycles / samples_number * fs
+    sinusoid1 = A1 * np.sin(2 * np.pi * f1 * n)
+
+    # second sinusoid
+    f2 = f2_cycles / samples_number * fs
+    sinusoid2 = A2 * np.sin(2 * np.pi * f2 * n)
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(n, sinusoid2, label='Test Signal $x[n]$')
+    plt.title('Test Signal with Two Sinusoids')
+    plt.xlabel('n')
+    plt.ylabel('$x[n]$')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+    x = sinusoid1 + sinusoid2
+    
+    return x, n
+
 
 class LowPassWindowedSincFilter:
     def __init__(self, N=99, cutoff_cycles=25, total_samples=500):
@@ -43,7 +68,7 @@ class LowPassWindowedSincFilter:
     def get_impulse_response(self):
         return self.h
 
-    def plot_impulse_response(self):
+    def plot_impulse_response(self): # Question 1
         plt.stem(self.h)
         plt.title('Impulse Response h[n]')
         plt.xlabel('n')
@@ -52,7 +77,6 @@ class LowPassWindowedSincFilter:
         plt.show()
 
 def main():
-
     filter = LowPassWindowedSincFilter()
 
     #x[n] = 1 for n = 0 , x[n] = 0 otherwise
@@ -60,14 +84,37 @@ def main():
     x[0] = 1
 
     # y[n] = x[n] * h[n]
-    y = filter.apply_filter(x)
-
-    print(y)
+    """Question 1"""
     # filter.plot_impulse_response()
-    plt.stem(x)
-    plt.title('Filtered Signal y[n]')
+
+    """Question 2"""
+    y = filter.apply_filter(x)
+    print(y)
+    # plt.stem(y)
+    # plt.title('Filtered Signal y[n]')
+    # plt.xlabel('n')
+    # plt.ylabel('y[n]')
+    # plt.grid(True)
+    # plt.show()
+
+    """Question 3"""
+    complicated_signal, n = generate_complex_test_signal()
+    print(complicated_signal)
+
+    # plt.stem(complicated_signal)
+    # plt.title('Combined Signal x[n]')
+    # plt.xlabel('n')
+    # plt.ylabel('x[n]')
+    # plt.grid(True)
+    # plt.show()
+
+    """Question 4"""
+    complicated_signal_filtered = filter.apply_filter(complicated_signal)
+
+    plt.stem(complicated_signal_filtered)
+    plt.title('Combined Signal filtered x[n]')
     plt.xlabel('n')
-    plt.ylabel('y[n]')
+    plt.ylabel('x[n]')
     plt.grid(True)
     plt.show()
 
