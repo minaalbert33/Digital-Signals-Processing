@@ -1,3 +1,18 @@
 #!/bin/bash
-python3 main.py
+
+files=$(ls | grep py)
+
+echo "Select a file by entering its corresponding number"
+count=1
+for file in $files
+do
+    echo "$count) $file"
+    ((count++))
+done
+
+read -p "Enter the number of the file you want to run: " selection
+
+selected_file=$(echo "$files" | sed -n "${selection}p")
+
+python3 "$selected_file"
 
