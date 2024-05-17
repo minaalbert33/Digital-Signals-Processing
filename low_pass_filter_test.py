@@ -1,9 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-
-
 def manual_convolve(x, h): # Question 2
     N = len(x)
     M = len(h)
@@ -31,14 +28,6 @@ def generate_complex_test_signal(samples_number=500, fs=500, f1_cycles=6, A1=1, 
     f2 = f2_cycles / samples_number * fs
     sinusoid2 = A2 * np.sin(2 * np.pi * f2 * n)
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(n, sinusoid2, label='Test Signal $x[n]$')
-    plt.title('Test Signal with Two Sinusoids')
-    plt.xlabel('n')
-    plt.ylabel('$x[n]$')
-    plt.grid(True)
-    plt.legend()
-    plt.show()
     x = sinusoid1 + sinusoid2
     
     return x, n
@@ -89,7 +78,7 @@ def main():
 
     """Question 2"""
     y = filter.apply_filter(x)
-    print(y)
+    # print(y)
     # plt.stem(y)
     # plt.title('Filtered Signal y[n]')
     # plt.xlabel('n')
@@ -101,12 +90,12 @@ def main():
     complicated_signal, n = generate_complex_test_signal()
     print(complicated_signal)
 
-    # plt.stem(complicated_signal)
-    # plt.title('Combined Signal x[n]')
-    # plt.xlabel('n')
-    # plt.ylabel('x[n]')
-    # plt.grid(True)
-    # plt.show()
+    plt.stem(complicated_signal)
+    plt.title('Combined Signal x[n]')
+    plt.xlabel('n')
+    plt.ylabel('x[n]')
+    plt.grid(True)
+    plt.show()
 
     """Question 4"""
     complicated_signal_filtered = filter.apply_filter(complicated_signal)
