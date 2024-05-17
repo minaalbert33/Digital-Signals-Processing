@@ -1,41 +1,76 @@
 import numpy as np
 import matplotlib.pyplot as plt
-# # for generating the same random numbers
-# np.random.seed(42)
-Nx = 500
-# x = np.random.randn(500)  # Example x[n] with 500 samples
-# h = np.random.randn(99)   # Example h[n] with 99 samples
-#
-# # Calculate the convolution y[n]
-# y = np.convolve(x, h)
-# print(y[1])
-#
-
-N = 99  # Length of the filter
-cycles_per_sample = 25 / 500        
-cutoff_frequency = 2 * np.pi * cycles_per_sample 
-
-# Midpoint of the filter
-alpha = (N - 1) / 2                         
-
-# Initialize the h[n] array
-h = np.zeros(N) 
-
-# get hte Impulse Response h[n]
-for i in range(N):
-    if i == alpha:
-        h[i] = 0.31752 * cutoff_frequency  # Handle the division by zero case
-    else:
-        h[i] = 0.31752 * np.sin(cutoff_frequency * (i - alpha)) / (i - alpha)
-    h[i] = h[i] * (0.54 - 0.46 * np.cos(0.0641114 * i))
 
 
-print(h)
-# Plot the impulse response
-# plt.stem(h)
-# plt.title('Impulse Response h[n]')
-# plt.xlabel('n')
-# plt.ylabel('h[n]')
-# plt.grid(True)
-# plt.show()
-#
+
+
+def manual_convolve(x, h):
+    """Convolve two signals x and h"""
+    N = len(x)
+    M = len(h)
+    # full convolution (N + M - 1)
+    y = np.zeros(N + M - 1)
+    
+    # Perform the convolution
+    for n in range(N + M - 1):
+        for k in range(N):
+            if 0 <= n - k < M:
+                y[n] += x[k] * h[n - k]
+    
+    return y
+
+class LowPassWindowedSincFilter:
+    def __init__(self, N=99, cutoff_cycles=25, total_samples=500):
+        self.N = N  # Length of the filter
+        self.cutoff_cycles = cutoff_cycles  
+        self.total_samples = total_samples  
+        self.fc = 2 * np.pi * (cutoff_cycles / total_samples)  
+        self.alpha = (N - 1) / 2  # Midpoint of the filter
+        self.h = np.zeros(N)  
+        self._generate_impulse_response()
+
+    def _generate_impulse_response(self): # private func
+        for i in range(self.N):
+            if i == self.alpha:
+                self.h[i] = 0.31752 * self.fc  
+            else:
+                self.h[i] = 0.31752 * np.sin(self.fc * (i - self.alpha)) / (i - self.alpha)
+            self.h[i] = self.h[i] * (0.54 - 0.46 * np.cos(2 * np.pi * i / (self.N - 1)))
+
+    def apply_filter(self, x):
+        return manual_convolve(x, self.h)
+
+    def get_impulse_response(self):
+        return self.h
+
+    def plot_impulse_response(self):
+        plt.stem(self.h)
+        plt.title('Impulse Response h[n]')
+        plt.xlabel('n')
+        plt.ylabel('h[n]')
+        plt.grid(True)
+        plt.show()
+
+def main():
+
+    filter = LowPassWindowedSincFilter()
+
+    #x[n] = 1 for n = 0 , x[n] = 0 otherwise
+    x = np.zeros(500)
+    x[0] = 1
+
+    # y[n] = x[n] * h[n]
+    y = filter.apply_filter(x)
+
+    print(y)
+    # filter.plot_impulse_response()
+    plt.stem(x)
+    plt.title('Filtered Signal y[n]')
+    plt.xlabel('n')
+    plt.ylabel('y[n]')
+    plt.grid(True)
+    plt.show()
+
+if __name__ == "__main__":
+    main()
+
