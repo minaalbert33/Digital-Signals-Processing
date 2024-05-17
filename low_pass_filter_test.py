@@ -18,18 +18,20 @@ def manual_convolve(x, h): # Question 2
 
 def generate_complex_test_signal(samples_number=500, fs=500, f1_cycles=6, A1=1, f2_cycles=44, A2=0.5):
     """Generate a complex test signal consisting of two sinusoids."""
-    n = np.arange(samples_number)
-    
-    # first sinusoid
-    f1 = f1_cycles / samples_number * fs
-    sinusoid1 = A1 * np.sin(2 * np.pi * f1 * n)
+    # Define number of samples
+    N = 500
 
-    # second sinusoid
-    f2 = f2_cycles / samples_number * fs
-    sinusoid2 = A2 * np.sin(2 * np.pi * f2 * n)
+    f1 = 6  # for 6 cycles in 500 samples
+    f2 = 44  # for 44 cycles in 500 samples
 
-    x = sinusoid1 + sinusoid2
-    
+    fs = 100  # You can adjust this value
+
+    n = np.arange(N)
+
+    x1 = np.sin(2 * np.pi * f1 * n / fs)
+    x2 = 0.5 * np.sin(2 * np.pi * f2 * n / fs)
+
+    x = x1 + x2
     return x, n
 
 
